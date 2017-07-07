@@ -163,4 +163,27 @@ class DblibPlatform extends SQLServer2008Platform
     {
         return true;
     }
+
+    public function getColumnDeclarationSQL($name, array $field)
+    {
+        if (isset($field['columnDefinition'])) {
+            $columnDef = $this->getCustomTypeDeclarationSQL($field);
+        } else {
+            $collation = (isset($field['collate']) && $field['collate']) ?
+                ' ' . $this->getColumnCollationDeclarationSQL($field['collate']) : '';
+
+            $notnull = (isset($field['notnull']) && $field['notnull']) ? ' NOT NULL' : ' NULL';
+
+            $unique = (isset($field['unique']) && $field['unique']) ?
+                ' ' . $this->getUniqueFieldDeclarationSQL() : '';
+            $check = (isset($field['check']) && $field['check']) ?
+                ' ' . $field['check'] : '';
+
+            $typeDecl = $field['type']->getSqlDeclaration($field, $this);
+            $columnDef = $typeDecl . $collation . $notnull . $unique . $check;
+        }
+        return $name . ' ' . $columnDef;
+    }
+
+
 }
