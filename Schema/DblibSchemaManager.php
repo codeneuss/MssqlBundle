@@ -1,6 +1,6 @@
 <?php
 
-namespace Realestate\MssqlBundle\Schema;
+namespace Codeneuss\MssqlBundle\Schema;
 
 use Doctrine\DBAL\Schema\SQLServerSchemaManager;
 
@@ -16,13 +16,8 @@ use Doctrine\DBAL\Schema\SQLServerSchemaManager;
  * @version     $Revision$
  * @since       2.0
  */
-
 class DblibSchemaManager extends SQLServerSchemaManager
 {
-
-
-  
-   
 
     protected function _getPortableSequenceDefinition($sequence)
     {
@@ -32,14 +27,9 @@ class DblibSchemaManager extends SQLServerSchemaManager
     public function createDatabase($name)
     {
         $query = "CREATE DATABASE $name";
-        if ($this->_conn->options['database_device']) {
-            $query.= ' ON '.$this->_conn->options['database_device'];
-            $query.= $this->_conn->options['database_size'] ? '=' .
-                     $this->_conn->options['database_size'] : '';
-        }
-        return $this->_conn->standaloneQuery($query, null, true);
+        return $this->_conn->exec($query);
     }
-    
+
     /**
      * lists all database sequences
      *
@@ -50,14 +40,17 @@ class DblibSchemaManager extends SQLServerSchemaManager
     {
         $query = "SELECT name FROM sysobjects WHERE xtype = 'U'";
         $tableNames = $this->_conn->fetchAll($query);
-
-        return array_map(array($this->_conn->formatter, 'fixSequenceName'), $tableNames);
+        if (property_exists($this->_conn, 'formatter')) {
+            return array_map(array($this->_conn->formatter, 'fixSequenceName'), $tableNames);
+        } else {
+            return array_map('fixSequenceName', $tableNames);
+        }
     }
-   
+
     /**
      * lists table views
      *
-     * @param string $table     database table name
+     * @param string $table database table name
      * @return array
      */
     public function listTableViews($table)
@@ -67,10 +60,10 @@ class DblibSchemaManager extends SQLServerSchemaManager
         if ($this->_conn->getAttribute(Doctrine::ATTR_PORTABILITY) & Doctrine::PORTABILITY_FIX_CASE) {
             if ($this->_conn->getAttribute(Doctrine::ATTR_FIELD_CASE) == CASE_LOWER) {
                 $keyName = strtolower($keyName);
-                $pkName  = strtolower($pkName);
+                $pkName = strtolower($pkName);
             } else {
                 $keyName = strtoupper($keyName);
-                $pkName  = strtoupper($pkName);
+                $pkName = strtoupper($pkName);
             }
         }
         $table = $this->_conn->quote($table, 'text');
@@ -83,7 +76,7 @@ class DblibSchemaManager extends SQLServerSchemaManager
         $result = array();
 
         foreach ($indexes as $index) {
-            if ( ! in_array($index, $pkAll) && $index != null) {
+            if (!in_array($index, $pkAll) && $index != null) {
                 $result[] = $this->_conn->formatter->fixIndexName($index);
             }
         }

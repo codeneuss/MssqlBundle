@@ -17,16 +17,17 @@
  * <http://www.doctrine-project.org>.
  */
 
-namespace Realestate\MssqlBundle\Driver\PDODblib;
+namespace Codeneuss\MssqlBundle\Driver\PDODblib;
 
 use Doctrine\DBAL\Driver\Connection as DriverConnection;
+use Doctrine\DBAL\Driver\PDOConnection;
 
 /**
  * MsSql/Dblib Connection implementation.
  *
  * @since 2.0
  */
-class Connection extends \Doctrine\DBAL\Driver\PDOConnection implements DriverConnection
+class Connection extends PDOConnection implements DriverConnection
 {
     /**
      * {@inheritdoc}

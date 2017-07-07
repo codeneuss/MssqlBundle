@@ -19,12 +19,9 @@
  * <http://www.doctrine-project.org>.
  */
 
-namespace Realestate\MssqlBundle\Platforms;
+namespace Codeneuss\MssqlBundle\Platforms;
 
-use Doctrine\DBAL\DBALException,
-    Doctrine\DBAL\Schema\TableDiff;
-
-use Doctrine\DBAL\Platforms\AbstractPlatform;
+use Doctrine\DBAL\DBALException;
 use Doctrine\DBAL\Platforms\SQLServer2008Platform;
 
 /**
@@ -53,7 +50,7 @@ class DblibPlatform extends SQLServer2008Platform
     {
         return false;
     }
-    
+
 
     /**
      * Adds an adapter-specific LIMIT clause to the SELECT statement.
@@ -61,8 +58,9 @@ class DblibPlatform extends SQLServer2008Platform
      * @param string $query
      * @param mixed $limit
      * @param mixed $offset
-     * @link http://lists.bestpractical.com/pipermail/rt-devel/2005-June/007339.html
      * @return string
+     * @throws DBALException
+     * @link http://lists.bestpractical.com/pipermail/rt-devel/2005-June/007339.html
      */
     protected function doModifyLimitQuery($query, $limit, $offset = null)
     {
@@ -76,13 +74,13 @@ class DblibPlatform extends SQLServer2008Platform
 
             if ($offset == 0) {
                 // SELECT TOP DISTINCT does not work with mssql
-                if(preg_match('#^SELECT\s+DISTINCT#i', $query) > 0) {
+                if (preg_match('#^SELECT\s+DISTINCT#i', $query) > 0) {
                     $query = preg_replace('/^SELECT\s+DISTINCT\s/i', 'SELECT DISTINCT TOP ' . $count . ' ', $query);
                 } else {
                     $query = preg_replace('/^SELECT\s/i', 'SELECT TOP ' . $count . ' ', $query);
                 }
 
-                
+
             } else {
                 $orderby = stristr($query, 'ORDER BY');
 
@@ -103,14 +101,14 @@ class DblibPlatform extends SQLServer2008Platform
                 $end = $offset + $count;
 
                 //$query = "SELECT * FROM (SELECT ROW_NUMBER() OVER ($over) AS \"doctrine_rownum\", $query) AS doctrine_tbl WHERE doctrine_rownum BETWEEN $start AND $end";
-                
+
                 // distinct x must be first in the select list - didn't work with above
                 list($select_list, $from_part) = explode('FROM', $query, 2);
                 $query = "SELECT * FROM (SELECT $select_list, ROW_NUMBER() OVER ($over) AS \"doctrine_rownum\" FROM $from_part) AS doctrine_tbl WHERE doctrine_rownum BETWEEN $start AND $end";
-                
+
             }
         }
-        
+
         return $query;
     }
 
@@ -127,7 +125,7 @@ class DblibPlatform extends SQLServer2008Platform
 
 
     /**
-    /**
+     * /**
      * @override
      */
     protected function initializeDoctrineTypeMappings()
@@ -149,20 +147,20 @@ class DblibPlatform extends SQLServer2008Platform
     {
         return 'Y-m-d H:i:s.u';
     }
-    
+
     /**
      * {@inheritDoc}
      */
     public function supportsSchemas()
     {
         return true;
-    }    
-    
+    }
+
     /**
      * {@inheritDoc}
      */
     public function canEmulateSchemas()
     {
         return true;
-    }     
+    }
 }

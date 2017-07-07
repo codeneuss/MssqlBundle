@@ -5,10 +5,10 @@
  * @author      Ken Golovin <ken@webplanet.co.nz>
  */
 
-namespace Realestate\MssqlBundle\Types;
+namespace Codeneuss\MssqlBundle\Types;
 
+use DateTime;
 use Doctrine\DBAL\Platforms\AbstractPlatform;
-use Doctrine\DBAL\Types\Type;
 use Doctrine\DBAL\Types\DateTimeType as BaseDateTimeType;
 use Doctrine\DBAL\Types\ConversionException;
 
@@ -33,16 +33,15 @@ class DateTimeType extends BaseDateTimeType
         // returned format is too unpredictable, so have to resort to strtotime()
         $timestamp = strtotime($value);
 
-        if($timestamp === false)
-        {
-            $val = \DateTime::createFromFormat($platform->getDateTimeFormatString(), $value);
+        if ($timestamp === false) {
+            $val = DateTime::createFromFormat($platform->getDateTimeFormatString(), $value);
             //var_dump($value);exit;
             if (!$val) {
                 throw ConversionException::conversionFailedFormat($value, $this->getName(), $platform->getDateTimeFormatString());
             }
         }
 
-        $val = new \DateTime();
+        $val = new DateTime();
         $val->setTimestamp($timestamp);
 
         /*
@@ -72,7 +71,7 @@ class DateTimeType extends BaseDateTimeType
      */
     public function convertToDatabaseValue($value, AbstractPlatform $platform)
     {
-        return ($value !== null)
+        return ($value instanceof \DateTime)
             ? $value->format('Y-m-d H:i:s' . '.000') : null;
     }
 }

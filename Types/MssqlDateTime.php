@@ -5,9 +5,9 @@
  * @author      Ken Golovin <ken@webplanet.co.nz>
  */
 
-namespace Realestate\MssqlBundle\Types;
+namespace Codeneuss\MssqlBundle\Types;
 
-class RealestateDateTime extends \DateTime
+class MssqlDateTime extends \DateTime
 {
     public function __toString()
     {

@@ -5,7 +5,7 @@
  * @author      Ken Golovin <ken@webplanet.co.nz>
  */
 
-namespace Realestate\MssqlBundle\Types;
+namespace Codeneuss\MssqlBundle\Types;
 
 use Doctrine\DBAL\Platforms\AbstractPlatform;
 use Doctrine\DBAL\Types\Type;
@@ -31,7 +31,7 @@ class DateType extends BaseDateType
 
     public function convertToDatabaseValue($value, AbstractPlatform $platform)
     {   
-        return ($value !== null) 
+        return ($value instanceof \DateTime)
             ? $value->format($platform->getDateFormatString()) : null;
     }   
     
@@ -41,7 +41,7 @@ class DateType extends BaseDateType
             return null;
         }   
 
-        $val = \Realestate\MssqlBundle\Types\RealestateDateTime::createFromFormat('!'.$platform->getDateFormatString(), $value);
+        $val = MssqlDateTime::createFromFormat('!'.$platform->getDateFormatString(), $value);
 
         if (!$val) {
             throw ConversionException::conversionFailedFormat($value, $this->getName(), $platform->getDateFormatString());

@@ -10,9 +10,10 @@
  * @author Scott Morken <scott.morken@pcmail.maricopa.edu>
  */
 
-namespace Realestate\MssqlBundle\Driver\PDODblib;
-use Realestate\MssqlBundle\Platforms\DblibPlatform;
-use Realestate\MssqlBundle\Schema\DblibSchemaManager;
+namespace Codeneuss\MssqlBundle\Driver\PDODblib;
+use Doctrine\DBAL\Driver\PDOConnection;
+use Codeneuss\MssqlBundle\Platforms\DblibPlatform;
+use Codeneuss\MssqlBundle\Schema\DblibSchemaManager;
 
 class Driver implements \Doctrine\DBAL\Driver
 {
@@ -23,12 +24,12 @@ class Driver implements \Doctrine\DBAL\Driver
      * @param string $username
      * @param string $password
      * @param array $driverOptions
-     * @return Doctrine\DBAL\Driver\Connection
+     * @return Connection|\Doctrine\DBAL\Driver\Connection|PDOConnection
      */
     public function connect(array $params, $username = null, $password = null, array $driverOptions = array())
     {
         if (stristr(PHP_OS, 'WIN')) {
-            $conn = new \Doctrine\DBAL\Driver\PDOConnection(
+            $conn = new PDOConnection(
                 $this->_constructPdoDsn($params),
                 $username,
                 $password,
@@ -49,7 +50,8 @@ class Driver implements \Doctrine\DBAL\Driver
     /**
      * Constructs the Dblib PDO DSN.
      *
-     * @return string  The DSN.
+     * @param array $params
+     * @return string The DSN.
      */
     private function _constructPdoDsn(array $params)
     {
