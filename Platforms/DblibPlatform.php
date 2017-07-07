@@ -185,5 +185,10 @@ class DblibPlatform extends SQLServer2008Platform
         return $name . ' ' . $columnDef;
     }
 
+    public function getDropDatabaseSQL($name)
+    {
+        return 'USE master;DROP DATABASE IF EXISTS '. $name;
+    }
+
 
 }
