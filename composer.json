@@ -1,10 +1,14 @@
 {
-    "name": "realestateconz/mssql-bundle",
+    "name": "codeneuss/mssql-bundle",
     "type": "symfony-bundle",
     "description": "Microsoft SQL Server Bundle for Symfony 2",
     "keywords": ["mssql", "sql server", "driver"],
     "license": "MIT",
     "authors": [
+        {
+            "name": "Volkmar Eigler",
+            "homepage": "https://github.com/codeneuss"
+        }
         {
             "name": "Realestate.co.nz",
             "homepage": "http://www.realestate.co.nz"
@@ -23,8 +27,8 @@
     },
     "autoload": {
         "psr-0": {
-            "Realestate\\MssqlBundle": ""
+            "Codeneuss\\MssqlBundle": ""
         }
     },
-    "target-dir": "Realestate/MssqlBundle"
+    "target-dir": "Codeneuss/MssqlBundle"
 }
