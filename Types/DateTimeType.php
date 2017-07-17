@@ -7,7 +7,6 @@
 
 namespace Codeneuss\MssqlBundle\Types;
 
-use DateTime;
 use Doctrine\DBAL\Platforms\AbstractPlatform;
 use Doctrine\DBAL\Types\DateTimeType as BaseDateTimeType;
 use Doctrine\DBAL\Types\ConversionException;
@@ -34,15 +33,15 @@ class DateTimeType extends BaseDateTimeType
         $timestamp = strtotime($value);
 
         if ($timestamp === false) {
-            $val = DateTime::createFromFormat($platform->getDateTimeFormatString(), $value);
+            $val = \DateTime::createFromFormat($platform->getDateTimeFormatString(), $value);
             //var_dump($value);exit;
             if (!$val) {
                 throw ConversionException::conversionFailedFormat($value, $this->getName(), $platform->getDateTimeFormatString());
             }
+        } else {
+            $val = new \DateTime('@'. $timestamp);
         }
 
-        $val = new DateTime();
-        $val->setTimestamp($timestamp);
 
         /*
         if(strpos($value, '.') !== false)
